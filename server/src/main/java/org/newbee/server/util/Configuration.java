@@ -4,6 +4,7 @@ import org.newbee.server.model.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -21,6 +22,8 @@ public class Configuration {
 
     public static Debate DEBATE;
     public static List<Comment> COMMENTS;
+
+    public static Date START_TIME;
 
     static {
         DEBATE = new Debate();

@@ -1,26 +1,26 @@
 package org.newbee.server.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Dictionary;
+import java.util.Hashtable;
 
 /**
  * Created by Huiyi on 2016/5/21.
  */
 public class PositiveStream {
-    private List<User> positiveSpeakers;
+    private Dictionary<Integer, User> positiveSpeakers;
 
     public PositiveStream() {
-        positiveSpeakers = new ArrayList<>();
-        positiveSpeakers.add(new User(1, null));
-        positiveSpeakers.add(new User(2, null));
-        positiveSpeakers.add(new User(3, null));
+        setPositiveSpeakers(new Hashtable<>());
+        getPositiveSpeakers().put(1, new User(1, null));
+        getPositiveSpeakers().put(3, new User(3, null));
+        getPositiveSpeakers().put(5, new User(5, null));
     }
 
-    public List<User> getPositiveSpeakers() {
+    public Dictionary<Integer, User> getPositiveSpeakers() {
         return positiveSpeakers;
     }
 
-    public void setPositiveSpeakers(List<User> positiveSpeakers) {
+    public void setPositiveSpeakers(Dictionary<Integer, User> positiveSpeakers) {
         this.positiveSpeakers = positiveSpeakers;
     }
 }
