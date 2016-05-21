@@ -13,7 +13,7 @@ if len(sys.argv) > 1:
 	cookies = pickle.load(open("cookies.pkl", "rb"))
 	for cookie in cookies:
 		driver.add_cookie(cookie)
-	driver.get('https://www.shimo.im/doc/UAXgOCyYZQUMi27Z')
+	driver.get('https://www.shimo.im/doc/g8XvnVEvCtEWnvrB')
 	search_box = driver.find_element_by_class_name('locate')
 	mouse = ActionChains(driver)
 	mouse.move_to_element_with_offset(search_box, 0, 0)
