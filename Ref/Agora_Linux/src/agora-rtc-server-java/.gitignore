@@ -1,0 +1,15 @@
+# Java class files
+*.class
+
+.gradle/
+
+local.properties
+
+# Mac OS X
+.DS_Store
+
+# generated files
+bin/
+gen/
+build/
+

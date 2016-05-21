@@ -1,0 +1,25 @@
+Step 1: compile the demo:
+  g++ demo.cpp -o demo -Llibs -lrecording -std=c++0x -Iinclude
+
+Step 2: run the demo:
+  1) let $RECORDING_BIN_PATH denote the directory where |libmediasdk.so|, |agora_recorder| and |libHDACEngine.so| reside,
+    export LD_LIBRARY_PATH=${RECORDING_BIN_PATH}
+    export PATH=${PATH}:${RECORDING_BIN_PATH}
+  2) change the configuration.
+     mkdir -p ${YOUR_RECORDING_DIR}
+     edit the file /etc/agora.d/recording.conf, add the following line into the file:
+       record on
+       directory ${YOUR_RECORDING_DIR)
+  3) run: ./demo. The voice data will be stored on ${YOUR_RECORDING_DIR)
+    with the name of CID-UID-JOIN_TS.agr, where CID is the channel id, UID the speaker
+    id, and JOIN_TS the timestamp joined in. There will be multiple agora recording files
+    if multiple speakers have joined the same channel.
+
+# This demo will join the channel PSTN_CHANNEL, and write down all others' voices.
+#  To view the logging message, see the file where syslog prints to
+
+  4) to replay the voice, run:
+     agora_player --input the_agr_file --output the_pcm_file_path [--speed (1|2|5|10)]
+  5) Further format conversion can be done by using any audio commercial product
+    as you wish, after a pcm file is generated.
+

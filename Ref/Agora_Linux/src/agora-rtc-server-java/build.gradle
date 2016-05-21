@@ -1,0 +1,11 @@
+apply plugin: 'java'
+
+sourceCompatibility = 1.6
+version = '1.2.2.6'
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'Agora RTC Server SDK for Java',
+                   'Implementation-Version': version
+    }
+}
+

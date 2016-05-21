@@ -1,0 +1,65 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link href="css/style.css" rel="stylesheet" />
+<link href="css/select2.css" rel="stylesheet" />
+<title>Login</title>
+</head>
+
+<body>
+   <div id="box">
+     <!--banner begin--> 
+      <div class="banner">
+           <img src="images/banner1.png" class="banner_QQ" />
+           <div class="banner_Agora">Agora Demo</div>
+      </div>
+     <!--banner end-->
+
+     <!--Login begin-->
+       <div class="Login">
+        <form action="interface_Waiting.html" method="get">
+           <input id="key" value="" class="vendorkey" type="text" placeholder="Vendor Key" required="required" name="key"/>
+           <span><img class="vendorkey_img" src="images/Shape.png" width="24" height="28" alt="24*28"/><span>
+           <br />
+           <input id="channel" class="channel" type="text" required="required" placeholder="Enter Room No." name="channel"/>
+           <span><img class="channel_img" src="images/Shape2.png" width="26" height="26" alt="26*26" /></span>
+           <br />
+           <span class="video_profile_span">
+               <select id="video_profile" name="video_profile"></select>
+           </span>
+           <span class="video_device_span">
+               <select id="select_video_device" name="video_device"></select>
+           </span>
+           <span class="audio_device_span">
+               <select id="select_audio_device" name="audio_device"></select>
+           </span>
+           <br />
+           <div class="video">
+               <input id="video" name="video" value="true" style="display:none;" />
+               <span class="video_choose"><img src="images/ic_login_checkbox_celected.png" width="25" alt="25*25" /></span>
+               <span class="video_img"><img src="images/ic_login_cell_video.png" /></span>
+               <input id="audio" name="audio" value="false" style="display:none;" />
+               <span class="audio_choose"><img src="images/ic_login_checkbox.png" width="25" alt="25*25" /></span>
+               <span class="audio_img"><img src="images/ic_login_cell_voice.png" /></span>
+           </div>
+           <br />
+          <input class="enter_room" type="submit" name="btn" value="Enter"/>
+       </form>
+       </div>
+     <!--Login end-->
+
+     <!--footet begin-->
+       <div class="footer">
+         <p>@copyright Agora&nbsp</p>
+       </div>
+     <!--footer end-->
+   </div>
+</body>
+<script type="text/javascript" src="js/jquery-2.0.3.min.js"></script>
+<script type="text/javascript" src="js/select2.js"></script>
+<script type="text/javascript" src="js/login.js"></script>
+<script src="js/socket.io.js"></script>
+<script src="js/adapter.js"></script>
+<script src="//rtcsdk.agora.io/AgoraRTCSDK-1.2.0.js"></script>
+</html>
