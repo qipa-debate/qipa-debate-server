@@ -15,8 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Huiyi on 2016/5/21.
@@ -36,10 +35,13 @@ public class DebateController {
     public void updateChannel(@RequestBody String connInfo) {
         LOG.debug(connInfo);
         decode(connInfo);
+        checkStart();
     }
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public Debate getDebateInformation() {
+        updateSpeakerInformation();
+        updateSpeakerElapsedTime();
         return Configuration.DEBATE;
     }
 
@@ -67,20 +69,14 @@ public class DebateController {
             JsonNode node = mapper.readTree(connInfo);
             int userId = node.get("user_id").asInt();
             String streamId = node.get("stream_id").asText();
-            boolean isActive = node.get("is_active").asBoolean();
+            String channelId = node.get("channel_id").asText();
 
-            if (isActive) {
-                if (isOnPositiveSide(userId)) {
-                    Configuration.DEBATE.getDebateStream().setPositiveSpeaker(new User(userId, streamId));
-                } else {
-                    Configuration.DEBATE.getDebateStream().setNegativeSpeaker(new User(userId, streamId));
-                }
-            }
-
-            if (isOnPositiveSide(userId)) {
-                Configuration.DEBATE.getPositiveStream().getPositiveSpeakers().get(userId - 1).setStreamId(streamId);
+            if (channelId.equals(Configuration.DEBATE_CHANNEL_ID)) {
+                Configuration.DEBATE.getDebateStream().getSpeakers().put(userId, new User(userId, streamId));
+            } else if (channelId.equals(Configuration.POSITIVE_SIDE_CHANNEL_ID)) {
+                Configuration.DEBATE.getPositiveStream().getPositiveSpeakers().put(userId, new User(userId, streamId));
             } else {
-                Configuration.DEBATE.getNegativeStream().getNegativeSpeakers().get(userId - 4).setStreamId(streamId);
+                Configuration.DEBATE.getNegativeStream().getNegativeSpeakers().put(userId, new User(userId, streamId));
             }
         }  catch (JsonProcessingException e) {
             e.printStackTrace();
@@ -107,10 +103,52 @@ public class DebateController {
         return c;
     }
 
-    private boolean isOnPositiveSide(int userId) {
-        if (userId <= 3)
-            return true;
-        else
-            return false;
+    private void checkStart() {
+        if (Configuration.DEBATE.getNegativeStream().getNegativeSpeakers().size() == 3
+         && Configuration.DEBATE.getPositiveStream().getPositiveSpeakers().size() == 3
+         && Configuration.DEBATE.getDebateStream().getSpeakers().size() == 6
+         && Configuration.START_TIME == null) {
+            Configuration.START_TIME = new Date();
+            changeCurrentSpeaker(1, 2);
+        }
+    }
+
+    private void updateSpeakerInformation() {
+        if (Configuration.START_TIME == null)
+            return;
+
+        Date now = new Date();
+        long diff = now.getTime() - Configuration.START_TIME.getTime();
+        long halfMinutes = diff / (1000 * 30);
+
+        if (halfMinutes < 2) {
+            changeCurrentSpeaker(1, 2);
+        } else if (halfMinutes < 4) {
+            changeCurrentSpeaker(3, 4);
+        } else {
+            changeCurrentSpeaker(5, 6);
+        }
+    }
+
+    private void changeCurrentSpeaker(int positive, int negative) {
+        Dictionary<Integer, User> speakers = Configuration.DEBATE.getDebateStream().getSpeakers();
+        Configuration.DEBATE.getDebateStream().setPositiveSpeaker(speakers.get(positive));
+        Configuration.DEBATE.getDebateStream().setNegativeSpeaker(speakers.get(negative));
+    }
+
+    private void updateSpeakerElapsedTime() {
+        if (Configuration.START_TIME == null)
+            return;
+
+        long diff = new Date().getTime() - Configuration.START_TIME.getTime();
+        long intervals = diff / (1000 * 30);
+        long elapsedTime = (intervals + 1) * 30 * 1000 - diff;
+        if (intervals % 2 == 0) {
+            Configuration.DEBATE.getDebateStream().setPositiveSpeakerElapsedTime(elapsedTime);
+            Configuration.DEBATE.getDebateStream().setNegativeSpeakerElapsedTime(30 * 1000);
+        } else {
+            Configuration.DEBATE.getDebateStream().setPositiveSpeakerElapsedTime(0);
+            Configuration.DEBATE.getDebateStream().setNegativeSpeakerElapsedTime(elapsedTime);
+        }
     }
 }
