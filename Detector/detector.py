@@ -1,5 +1,6 @@
 import os
 import sys
+import io
 import time
 import threading
 import Pyro4
@@ -17,13 +18,12 @@ class Detector:
 	def get_content(self):
 		with self.lock:
 			content_t = self.content
-			self.content = ""
 		return content_t
 
 	def get_words(self):
 		with self.lock:
 			words_t = self.words
-			self.words = ""
+		return words_t
 
 	def set_content(self, c):
 		with self.lock:
@@ -32,14 +32,15 @@ class Detector:
 
 	def set_words(self, w):
 		with self.lock:
+			w = w.replace('\t'," ").replace('\n'," ")
 			self.words = w
 			print self.words
 
 detector = Detector()
 
 def run():
+	port = 8080
 	while True:
-		port = 8080
 		try:
 			daemon = Pyro4.Daemon("0.0.0.0", port)                # make a Pyro daemon
 			uri = daemon.register(detector)   # register the greeting maker as a Pyro object
@@ -72,11 +73,10 @@ while True:
 			print file_prefix
 
 			print os.system("sh run.sh " + file_prefix)
-			with open(file_prefix + ".content", "r") as fp:
-				detector.set_content(fp.read().decode("utf-8"))
-			
-			with open(file_prefix + ".words", "r") as fp:
-				detector.set_words(fp.read().decode("utf-8"))
+			with io.open(file_prefix + ".content", "r", encoding='utf8') as fp:
+				detector.set_content(fp.read())
+			with io.open("keywords.txt", "r", encoding='utf8') as fp:
+				detector.set_words(fp.read())
 
 			file_list.append(temp_file[0][1])
 	except Exception, e:

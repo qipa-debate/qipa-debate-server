@@ -2,6 +2,7 @@ import time
 import datetime
 import sys
 import pickle
+import requests
 import Pyro4
 from selenium import webdriver
 from selenium.webdriver.common.action_chains import ActionChains
@@ -32,16 +33,29 @@ def add_to_shimo(content):
 	time.sleep(5)
 	driver.quit()
 
-#
+def post_keyword(keyword):
+	url="http://192.168.160.1:8080/debate/setkeyword"  
+	post={"keyword": keyword}
+	requests.session().post(url,json = post)
+
+keywords = ""
+contents = ""
 if len(sys.argv) > 1:
 	while True:
 		print "*"
 		try:
-			uri = "PYRO:obj_06bd3d87dbb549e0871684bc5d7620ed@121.201.29.100:8080"
+			uri = "PYRO:obj_76cdfbcd7140430e8b0ddab9c0a7a2e3@121.201.29.100:8080"
 			client = Pyro4.Proxy(uri)
 			content = client.get_content()
-			if content:
-				add_to_shimo(content)
+			if content and contents <> content:
+				contents = content
+				add_to_shimo(contents)
+			words = client.get_words()
+			print words
+			if words and keywords <> words:
+				keywords = words
+				post_keyword(keywords)
+				print "post key"
 		except Exception, e:
 			print e
 		time.sleep(5)
